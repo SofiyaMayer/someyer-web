@@ -29,6 +29,9 @@
     "test:int": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts"
   },
   "dependencies": {
+    "@chakra-ui/react": "3.37.0",
+    "@emotion/cache": "11.14.0",
+    "@emotion/react": "11.14.0",
     "@payloadcms/admin-bar": "3.91.0",
     "@payloadcms/db-postgres": "3.91.0",
     "@payloadcms/live-preview-react": "3.91.0",
