@@ -41,7 +41,8 @@ pnpx create-payload-app my-project -t website
 
 1. First [clone the repo](#clone) if you have not done so already
 1. `cd my-project && cp .env.example .env` to copy the example environment variables
-1. `pnpm install && pnpm dev` to install dependencies and start the dev server
+1. `docker compose up -d postgres` to start the local Postgres database
+1. `pnpm install && pnpm dev` to install dependencies (this also generates the Prisma Client) and start the dev server
 1. open `http://localhost:3000` to open the app in your browser
 
 That's it! Changes made in `./src` will be reflected in your app. Follow the on-screen instructions to login and create your first admin user. Then check out [Production](#production) once you're ready to build and serve your app, and [Deployment](#deployment) when you're ready to go live.
@@ -160,8 +161,8 @@ Core features:
 - [TypeScript](https://www.typescriptlang.org)
 - [React Hook Form](https://react-hook-form.com)
 - [Payload Admin Bar](https://github.com/payloadcms/payload/tree/3.x/packages/admin-bar)
-- [TailwindCSS styling](https://tailwindcss.com/)
-- [shadcn/ui components](https://ui.shadcn.com/)
+- [Chakra UI v3](https://chakra-ui.com) components and styling
+- [next-themes](https://github.com/pacocoursey/next-themes) for the light/dark switch
 - User Accounts and Authentication
 - Fully featured blog
 - Publication workflow
@@ -171,6 +172,13 @@ Core features:
 - Search
 - Redirects
 - Live preview
+
+### Styling
+
+The website uses Chakra UI; the Payload admin keeps its own styles. The theme lives in `src/theme.ts` and is
+provided in `src/providers/ChakraProvider`. The light/dark switch sets `data-theme` on `<html>`, and Chakra's
+`_dark`/`_light` conditions follow it. To force a theme on one part of the page (for example the header over a
+dark hero image), put `className="chakra-theme"` and `data-theme="dark"` on that element.
 
 ### Cache
 
@@ -212,13 +220,29 @@ pnpm payload migrate
 
 This command will check for any migrations that have not yet been run and try to run them and it will keep a record of migrations that have been run in the database.
 
+`pnpm migrate:create` and `pnpm migrate` are shortcuts for the two commands above.
+
+### Working with Prisma
+
+Prisma is available for application data that does not belong in the CMS. Payload owns the `public` schema and
+Prisma owns the `app` schema of the same database, so the two migration systems never touch each other's tables.
+
+- Define models in `prisma/schema.prisma` and give every model `@@schema("app")`
+- `pnpm prisma:migrate` creates and applies a migration in development (`prisma migrate dev`)
+- `pnpm prisma:deploy` applies committed migrations, e.g. on the server (`prisma migrate deploy`)
+- `pnpm prisma:studio` opens Prisma Studio
+- Import the shared client with `import { prisma } from '@/utilities/prisma'` in server code only
+
+The generated client lives in `src/generated/prisma`. It is not committed and is regenerated on `pnpm install`
+(or with `pnpm prisma:generate`).
+
 ### Docker
 
 Alternatively, you can use [Docker](https://www.docker.com) to spin up this template locally. To do so, follow these steps:
 
 1. Follow [steps 1 and 2 from above](#development), the docker-compose file will automatically use the `.env` file in your project root
-1. Next run `docker-compose up`
-1. Follow [steps 4 and 5 from above](#development) to login and create your first admin user
+1. Next run `docker compose up`; it starts Postgres, installs dependencies, applies Prisma migrations and runs `pnpm dev`
+1. Open `http://localhost:3000/admin` to login and create your first admin user
 
 That's it! The Docker instance will help you get up and running quickly while also standardizing the development environment across your teams.
 
