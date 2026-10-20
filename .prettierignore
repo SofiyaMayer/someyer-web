@@ -13,3 +13,4 @@
 tsconfig.json
 
 **/importMap.js
+src/migrations/
