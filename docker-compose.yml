@@ -9,7 +9,7 @@ services:
       - .:/home/node/app
       - node_modules:/home/node/app/node_modules
     working_dir: /home/node/app/
-    command: sh -c "corepack pnpm install && corepack pnpm dev"
+    command: sh -c "corepack pnpm install && corepack pnpm prisma:deploy && corepack pnpm dev"
     depends_on:
       node_modules-owner:
         condition: service_completed_successfully

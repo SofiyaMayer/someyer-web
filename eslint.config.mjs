@@ -27,6 +27,7 @@ const eslintConfig = defineConfig([
   globalIgnores([
     '.next/',
     '.pnpm-store/',
+    'src/generated/',
     'src/payload-types.ts',
     'src/payload-generated-schema.ts',
     'src/app/(payload)/admin/importMap.js',

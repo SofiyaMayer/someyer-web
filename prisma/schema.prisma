@@ -1,0 +1,14 @@
+// Payload owns the `public` schema through its own Drizzle migrations.
+// Every Prisma model must live in `app` (add `@@schema("app")`) so the two
+// migration systems never see each other's tables.
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "esm"
+}
+
+datasource db {
+  provider = "postgresql"
+  schemas  = ["app"]
+}
