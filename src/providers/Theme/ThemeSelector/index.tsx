@@ -7,31 +7,37 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import React, { useState } from 'react'
+import React, { useState, useSyncExternalStore } from 'react'
 
 import type { Theme } from './types'
 
 import { useTheme } from '..'
 import { themeLocalStorageKey } from './types'
 
+const subscribeToStorage = (onChange: () => void) => {
+  window.addEventListener('storage', onChange)
+  return () => window.removeEventListener('storage', onChange)
+}
+
+const getStoredPreference = () => window.localStorage.getItem(themeLocalStorageKey) ?? 'auto'
+
+// localStorage does not exist during SSR; an empty value keeps server and client markup equal
+const getServerPreference = () => ''
+
 export const ThemeSelector: React.FC = () => {
   const { setTheme } = useTheme()
-  const [value, setValue] = useState('')
+  const storedPreference = useSyncExternalStore(
+    subscribeToStorage,
+    getStoredPreference,
+    getServerPreference,
+  )
+  const [selected, setSelected] = useState<string | null>(null)
+  const value = selected ?? storedPreference
 
   const onThemeChange = (themeToSet: Theme & 'auto') => {
-    if (themeToSet === 'auto') {
-      setTheme(null)
-      setValue('auto')
-    } else {
-      setTheme(themeToSet)
-      setValue(themeToSet)
-    }
+    setTheme(themeToSet === 'auto' ? null : themeToSet)
+    setSelected(themeToSet)
   }
-
-  React.useEffect(() => {
-    const preference = window.localStorage.getItem(themeLocalStorageKey)
-    setValue(preference ?? 'auto')
-  }, [])
 
   return (
     <Select onValueChange={onThemeChange} value={value}>
