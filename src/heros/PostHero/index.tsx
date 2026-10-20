@@ -1,3 +1,4 @@
+import { Box, Container, Flex, Heading, Stack, Text } from '@chakra-ui/react'
 import { formatDateTime } from 'src/utilities/formatDateTime'
 import React from 'react'
 
@@ -15,10 +16,23 @@ export const PostHero: React.FC<{
     populatedAuthors && populatedAuthors.length > 0 && formatAuthors(populatedAuthors) !== ''
 
   return (
-    <div className="relative -mt-[10.4rem] flex items-end">
-      <div className="container z-10 relative lg:grid lg:grid-cols-[1fr_48rem_1fr] text-white pb-8">
-        <div className="col-start-1 col-span-1 md:col-start-2 md:col-span-2">
-          <div className="uppercase text-sm mb-6">
+    <Flex
+      align="flex-end"
+      className="chakra-theme"
+      color="fg"
+      data-theme="dark"
+      mt="-10.4rem"
+      position="relative"
+    >
+      <Container
+        display={{ lg: 'grid' }}
+        gridTemplateColumns={{ lg: '1fr 48rem 1fr' }}
+        pb="8"
+        position="relative"
+        zIndex={10}
+      >
+        <Box gridColumn={{ base: '1 / span 1', md: '2 / span 2' }}>
+          <Text mb="6" textStyle="sm" textTransform="uppercase">
             {categories?.map((category, index) => {
               if (typeof category === 'object' && category !== null) {
                 const { title: categoryTitle } = category
@@ -36,38 +50,51 @@ export const PostHero: React.FC<{
               }
               return null
             })}
-          </div>
+          </Text>
 
-          <div className="">
-            <h1 className="mb-6 text-3xl md:text-5xl lg:text-6xl">{title}</h1>
-          </div>
+          <Heading as="h1" mb="6" size={{ base: '3xl', md: '5xl', lg: '6xl' }}>
+            {title}
+          </Heading>
 
-          <div className="flex flex-col md:flex-row gap-4 md:gap-16">
+          <Stack direction={{ base: 'column', md: 'row' }} gap={{ base: 4, md: 16 }}>
             {hasAuthors && (
-              <div className="flex flex-col gap-4">
-                <div className="flex flex-col gap-1">
-                  <p className="text-sm">Author</p>
+              <Stack gap="1">
+                <Text textStyle="sm">Author</Text>
 
-                  <p>{formatAuthors(populatedAuthors)}</p>
-                </div>
-              </div>
+                <Text>{formatAuthors(populatedAuthors)}</Text>
+              </Stack>
             )}
             {publishedAt && (
-              <div className="flex flex-col gap-1">
-                <p className="text-sm">Date Published</p>
+              <Stack gap="1">
+                <Text textStyle="sm">Date Published</Text>
 
                 <time dateTime={publishedAt}>{formatDateTime(publishedAt)}</time>
-              </div>
+              </Stack>
             )}
-          </div>
-        </div>
-      </div>
-      <div className="min-h-[80vh] select-none">
+          </Stack>
+        </Box>
+      </Container>
+      <Box minHeight="80vh" userSelect="none">
         {heroImage && typeof heroImage !== 'string' && (
-          <Media fill priority imgClassName="-z-10 object-cover" resource={heroImage} />
+          <Media
+            fill
+            imgProps={{ objectFit: 'cover', zIndex: -10 }}
+            priority
+            resource={heroImage}
+          />
         )}
-        <div className="absolute pointer-events-none left-0 bottom-0 w-full h-1/2 bg-linear-to-t from-black to-transparent" />
-      </div>
-    </div>
+        <Box
+          bgGradient="to-t"
+          bottom="0"
+          gradientFrom="black"
+          gradientTo="transparent"
+          height="50%"
+          left="0"
+          pointerEvents="none"
+          position="absolute"
+          width="full"
+        />
+      </Box>
+    </Flex>
   )
 }

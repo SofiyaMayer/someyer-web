@@ -1,3 +1,4 @@
+import { Text, type TextProps } from '@chakra-ui/react'
 import React from 'react'
 
 const defaultLabels = {
@@ -12,24 +13,25 @@ const defaultCollectionLabels = {
   },
 }
 
-export const PageRange: React.FC<{
-  className?: string
-  collection?: keyof typeof defaultCollectionLabels
-  collectionLabels?: {
-    plural?: string
-    singular?: string
-  }
-  currentPage?: number
-  limit?: number
-  totalDocs?: number
-}> = (props) => {
+export const PageRange: React.FC<
+  {
+    collection?: keyof typeof defaultCollectionLabels
+    collectionLabels?: {
+      plural?: string
+      singular?: string
+    }
+    currentPage?: number
+    limit?: number
+    totalDocs?: number
+  } & TextProps
+> = (props) => {
   const {
-    className,
     collection,
     collectionLabels: collectionLabelsFromProps,
     currentPage,
     limit,
     totalDocs,
+    ...rest
   } = props
 
   let indexStart = (currentPage ? currentPage - 1 : 1) * (limit || 1) + 1
@@ -45,13 +47,13 @@ export const PageRange: React.FC<{
     {}
 
   return (
-    <div className={[className, 'font-semibold'].filter(Boolean).join(' ')}>
+    <Text fontWeight="semibold" {...rest}>
       {(typeof totalDocs === 'undefined' || totalDocs === 0) && 'Search produced no results.'}
       {typeof totalDocs !== 'undefined' &&
         totalDocs > 0 &&
         `Showing ${indexStart}${indexStart > 0 ? ` - ${indexEnd}` : ''} of ${totalDocs} ${
           totalDocs > 1 ? plural : singular
         }`}
-    </div>
+    </Text>
   )
 }

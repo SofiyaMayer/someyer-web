@@ -1,5 +1,5 @@
 'use client'
-import { Button } from '@/components/ui/button'
+import { Button, Flex } from '@chakra-ui/react'
 import { CopyIcon } from '@payloadcms/ui/icons/Copy'
 import { useState } from 'react'
 
@@ -16,18 +16,18 @@ export function CopyButton({ code }: { code: string }) {
   }
 
   return (
-    <div className="flex justify-end align-middle">
+    <Flex justify="flex-end">
       <Button
-        className="flex gap-1"
-        variant={'secondary'}
+        gap="1"
         onClick={async () => {
           await navigator.clipboard.writeText(code)
           updateCopyStatus()
         }}
+        variant="subtle"
       >
-        <p>{text}</p>
+        {text}
         <CopyIcon />
       </Button>
-    </div>
+    </Flex>
   )
 }

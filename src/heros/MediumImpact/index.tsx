@@ -1,3 +1,4 @@
+import { Box, Container, HStack } from '@chakra-ui/react'
 import React from 'react'
 
 import type { Page } from '@/payload-types'
@@ -8,12 +9,12 @@ import RichText from '@/components/RichText'
 
 export const MediumImpactHero: React.FC<Page['hero']> = ({ links, media, richText }) => {
   return (
-    <div className="">
-      <div className="container mb-8">
-        {richText && <RichText className="mb-6" data={richText} enableGutter={false} />}
+    <Box>
+      <Container mb="8">
+        {richText && <RichText data={richText} enableGutter={false} mb="6" />}
 
         {Array.isArray(links) && links.length > 0 && (
-          <ul className="flex gap-4">
+          <HStack as="ul" gap="4" listStyleType="none">
             {links.map(({ link }, i) => {
               return (
                 <li key={i}>
@@ -21,26 +22,21 @@ export const MediumImpactHero: React.FC<Page['hero']> = ({ links, media, richTex
                 </li>
               )
             })}
-          </ul>
+          </HStack>
         )}
-      </div>
-      <div className="container ">
+      </Container>
+      <Container>
         {media && typeof media === 'object' && (
-          <div>
-            <Media
-              className="-mx-4 md:-mx-8 2xl:-mx-16"
-              imgClassName=""
-              priority
-              resource={media}
-            />
+          <Box>
+            <Media mx={{ base: '-4', md: '-8', '2xl': '-16' }} priority resource={media} />
             {media?.caption && (
-              <div className="mt-3">
+              <Box mt="3">
                 <RichText data={media.caption} enableGutter={false} />
-              </div>
+              </Box>
             )}
-          </div>
+          </Box>
         )}
-      </div>
-    </div>
+      </Container>
+    </Box>
   )
 }

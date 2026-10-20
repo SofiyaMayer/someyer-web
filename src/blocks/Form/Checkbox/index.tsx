@@ -1,45 +1,44 @@
 import type { CheckboxField } from '@payloadcms/plugin-form-builder/types'
-import type { FieldErrorsImpl, FieldValues, UseFormRegister } from 'react-hook-form'
+import type { Control, FieldErrorsImpl } from 'react-hook-form'
 
-import { useFormContext } from 'react-hook-form'
-
-import { Checkbox as CheckboxUi } from '@/components/ui/checkbox'
-import { Label } from '@/components/ui/label'
+import { Checkbox as CheckboxUi, Field } from '@chakra-ui/react'
 import React from 'react'
+import { Controller } from 'react-hook-form'
 
 import { Error } from '../Error'
 import { Width } from '../Width'
 
 export const Checkbox: React.FC<
   CheckboxField & {
+    control: Control
     errors: Partial<FieldErrorsImpl>
-    register: UseFormRegister<FieldValues>
   }
-> = ({ name, defaultValue, errors, label, register, required, width }) => {
-  const props = register(name, { required: required })
-  const { setValue } = useFormContext()
-
+> = ({ name, control, defaultValue, errors, label, required, width }) => {
   return (
     <Width width={width}>
-      <div className="flex items-center gap-2">
-        <CheckboxUi
-          defaultChecked={defaultValue}
-          id={name}
-          {...props}
-          onCheckedChange={(checked) => {
-            setValue(props.name, checked)
-          }}
-        />
-        <Label htmlFor={name}>
-          {required && (
-            <span className="required">
-              * <span className="sr-only">(required)</span>
-            </span>
+      <Field.Root invalid={Boolean(errors[name])} required={Boolean(required)}>
+        <Controller
+          control={control}
+          defaultValue={Boolean(defaultValue)}
+          name={name}
+          render={({ field }) => (
+            <CheckboxUi.Root
+              checked={field.value}
+              name={field.name}
+              onCheckedChange={({ checked }) => field.onChange(checked === true)}
+            >
+              <CheckboxUi.HiddenInput onBlur={field.onBlur} />
+              <CheckboxUi.Control />
+              <CheckboxUi.Label>
+                {label}
+                <Field.RequiredIndicator />
+              </CheckboxUi.Label>
+            </CheckboxUi.Root>
           )}
-          {label}
-        </Label>
-      </div>
-      {errors[name] && <Error name={name} />}
+          rules={{ required }}
+        />
+        <Error name={name} />
+      </Field.Root>
     </Width>
   )
 }

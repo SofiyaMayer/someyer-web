@@ -1,4 +1,4 @@
-import clsx from 'clsx'
+import { Box, SimpleGrid, type BoxProps } from '@chakra-ui/react'
 import React from 'react'
 import RichText from '@/components/RichText'
 
@@ -8,25 +8,24 @@ import { Card } from '../../components/Card'
 import { DefaultTypedEditorState } from '@payloadcms/richtext-lexical'
 
 export type RelatedPostsProps = {
-  className?: string
   docs?: Post[]
   introContent?: DefaultTypedEditorState
-}
+} & BoxProps
 
 export const RelatedPosts: React.FC<RelatedPostsProps> = (props) => {
-  const { className, docs, introContent } = props
+  const { docs, introContent, ...rest } = props
 
   return (
-    <div className={clsx('lg:container', className)}>
+    <Box {...rest}>
       {introContent && <RichText data={introContent} enableGutter={false} />}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 items-stretch">
+      <SimpleGrid alignItems="stretch" columns={{ base: 1, md: 2 }} gap={{ base: 4, md: 8 }}>
         {docs?.map((doc, index) => {
           if (typeof doc === 'string') return null
 
-          return <Card key={index} doc={doc} relationTo="posts" showCategories />
+          return <Card doc={doc} key={index} relationTo="posts" showCategories />
         })}
-      </div>
-    </div>
+      </SimpleGrid>
+    </Box>
   )
 }

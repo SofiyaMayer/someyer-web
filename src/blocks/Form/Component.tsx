@@ -1,11 +1,11 @@
 'use client'
 import type { FormFieldBlock, Form as FormType } from '@payloadcms/plugin-form-builder/types'
 
+import { Box, Button, Container, Stack, Text } from '@chakra-ui/react'
 import { useRouter } from 'next/navigation'
 import React, { useCallback, useState } from 'react'
 import { useForm, FormProvider } from 'react-hook-form'
 import RichText from '@/components/RichText'
-import { Button } from '@/components/ui/button'
 import type { DefaultTypedEditorState } from '@payloadcms/richtext-lexical'
 
 import { fields } from './fields'
@@ -114,20 +114,20 @@ export const FormBlock: React.FC<
   )
 
   return (
-    <div className="container lg:max-w-[48rem]">
+    <Container maxWidth={{ lg: '48rem' }}>
       {enableIntro && introContent && !hasSubmitted && (
-        <RichText className="mb-8 lg:mb-12" data={introContent} enableGutter={false} />
+        <RichText data={introContent} enableGutter={false} mb={{ base: 8, lg: 12 }} />
       )}
-      <div className="p-4 lg:p-6 border border-border rounded-[0.8rem]">
+      <Box borderRadius="0.8rem" borderWidth="1px" p={{ base: 4, lg: 6 }}>
         <FormProvider {...formMethods}>
           {!isLoading && hasSubmitted && confirmationType === 'message' && (
             <RichText data={confirmationMessage} />
           )}
-          {isLoading && !hasSubmitted && <p>Loading, please wait...</p>}
-          {error && <div>{`${error.status || '500'}: ${error.message || ''}`}</div>}
+          {isLoading && !hasSubmitted && <Text>Loading, please wait...</Text>}
+          {error && <Text>{`${error.status || '500'}: ${error.message || ''}`}</Text>}
           {!hasSubmitted && (
-            <form id={formID} onSubmit={handleSubmit(onSubmit)}>
-              <div className="mb-4 last:mb-0">
+            <form id={formID} noValidate onSubmit={handleSubmit(onSubmit)}>
+              <Stack gap="6" mb="4">
                 {formFromProps &&
                   formFromProps.fields &&
                   formFromProps.fields?.map((field, index) => {
@@ -135,29 +135,28 @@ export const FormBlock: React.FC<
                     const Field: React.FC<any> = fields?.[field.blockType as keyof typeof fields]
                     if (Field) {
                       return (
-                        <div className="mb-6 last:mb-0" key={index}>
-                          <Field
-                            form={formFromProps}
-                            {...field}
-                            {...formMethods}
-                            control={control}
-                            errors={errors}
-                            register={register}
-                          />
-                        </div>
+                        <Field
+                          form={formFromProps}
+                          key={index}
+                          {...field}
+                          {...formMethods}
+                          control={control}
+                          errors={errors}
+                          register={register}
+                        />
                       )
                     }
                     return null
                   })}
-              </div>
+              </Stack>
 
-              <Button form={formID} type="submit" variant="default">
+              <Button form={formID} type="submit">
                 {submitButtonLabel}
               </Button>
             </form>
           )}
         </FormProvider>
-      </div>
-    </div>
+      </Box>
+    </Container>
   )
 }

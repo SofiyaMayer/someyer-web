@@ -1,3 +1,4 @@
+import { Box } from '@chakra-ui/react'
 import React from 'react'
 
 import { Code } from './Component.client'
@@ -8,14 +9,10 @@ export type CodeBlockProps = {
   blockType: 'code'
 }
 
-type Props = CodeBlockProps & {
-  className?: string
-}
-
-export const CodeBlock: React.FC<Props> = ({ className, code, language }) => {
+export const CodeBlock: React.FC<CodeBlockProps> = ({ code, language }) => {
   return (
-    <div className={[className, 'not-prose'].filter(Boolean).join(' ')}>
+    <Box className="not-prose">
       <Code code={code} language={language} />
-    </div>
+    </Box>
   )
 }

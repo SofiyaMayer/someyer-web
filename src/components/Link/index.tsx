@@ -1,14 +1,13 @@
-import { Button, type ButtonProps } from '@/components/ui/button'
-import { cn } from '@/utilities/ui'
+import { Button, type ButtonProps, Link as ChakraLink } from '@chakra-ui/react'
 import Link from 'next/link'
 import React from 'react'
 
+import type { LinkAppearances } from '@/fields/link'
 import type { Page, Post } from '@/payload-types'
 
 type CMSLinkType = {
-  appearance?: 'inline' | ButtonProps['variant']
+  appearance?: 'inline' | 'link' | LinkAppearances | null
   children?: React.ReactNode
-  className?: string
   label?: string | null
   newTab?: boolean | null
   reference?: {
@@ -20,18 +19,13 @@ type CMSLinkType = {
   url?: string | null
 }
 
+const buttonVariants = {
+  default: 'solid',
+  outline: 'outline',
+} as const satisfies Record<LinkAppearances, ButtonProps['variant']>
+
 export const CMSLink: React.FC<CMSLinkType> = (props) => {
-  const {
-    type,
-    appearance = 'inline',
-    children,
-    className,
-    label,
-    newTab,
-    reference,
-    size: sizeFromProps,
-    url,
-  } = props
+  const { type, appearance = 'inline', children, label, newTab, reference, size, url } = props
 
   const href =
     type === 'reference' && typeof reference?.value === 'object' && reference.value.slug
@@ -42,25 +36,23 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
 
   if (!href) return null
 
-  const size = appearance === 'link' ? 'clear' : sizeFromProps
   const newTabProps = newTab ? { rel: 'noopener noreferrer', target: '_blank' } : {}
 
+  const link = (
+    <Link href={href} {...newTabProps}>
+      {label && label}
+      {children && children}
+    </Link>
+  )
+
   /* Ensure we don't break any styles set by richText */
-  if (appearance === 'inline') {
-    return (
-      <Link className={cn(className)} href={href || url || ''} {...newTabProps}>
-        {label && label}
-        {children && children}
-      </Link>
-    )
-  }
+  if (appearance === 'inline') return link
+
+  if (appearance === 'link') return <ChakraLink asChild>{link}</ChakraLink>
 
   return (
-    <Button asChild className={className} size={size} variant={appearance}>
-      <Link className={cn(className)} href={href || url || ''} {...newTabProps}>
-        {label && label}
-        {children && children}
-      </Link>
+    <Button asChild size={size ?? undefined} variant={buttonVariants[appearance ?? 'default']}>
+      {link}
     </Button>
   )
 }

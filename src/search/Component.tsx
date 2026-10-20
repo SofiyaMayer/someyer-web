@@ -1,6 +1,5 @@
 'use client'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { Field, Input, VisuallyHidden } from '@chakra-ui/react'
 import React, { useState, useEffect } from 'react'
 import { useDebounce } from '@/utilities/useDebounce'
 import { useRouter } from 'next/navigation'
@@ -16,26 +15,25 @@ export const Search: React.FC = () => {
   }, [debouncedValue, router])
 
   return (
-    <div>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault()
-        }}
-      >
-        <Label htmlFor="search" className="sr-only">
-          Search
-        </Label>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault()
+      }}
+    >
+      <Field.Root>
+        <VisuallyHidden asChild>
+          <Field.Label>Search</Field.Label>
+        </VisuallyHidden>
         <Input
-          id="search"
           onChange={(event) => {
             setValue(event.target.value)
           }}
           placeholder="Search"
         />
-        <button type="submit" className="sr-only">
-          submit
-        </button>
-      </form>
-    </div>
+      </Field.Root>
+      <VisuallyHidden asChild>
+        <button type="submit">submit</button>
+      </VisuallyHidden>
+    </form>
   )
 }

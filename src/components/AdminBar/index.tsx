@@ -2,7 +2,7 @@
 
 import type { PayloadAdminBarProps, PayloadMeUser } from '@payloadcms/admin-bar'
 
-import { cn } from '@/utilities/ui'
+import { Box, Container } from '@chakra-ui/react'
 import { useSelectedLayoutSegments } from 'next/navigation'
 import { PayloadAdminBar } from '@payloadcms/admin-bar'
 import React, { useState } from 'react'
@@ -47,20 +47,12 @@ export const AdminBar: React.FC<{
   }, [])
 
   return (
-    <div
-      className={cn(baseClass, 'py-2 bg-black text-white', {
-        block: show,
-        hidden: !show,
-      })}
-    >
-      <div className="container">
+    <Box bg="black" className={baseClass} color="white" display={show ? 'block' : 'none'} py="2">
+      <Container>
         <PayloadAdminBar
           {...adminBarProps}
-          className="py-2 text-white"
           classNames={{
-            controls: 'font-medium text-white',
-            logo: 'text-white',
-            user: 'text-white',
+            controls: `${baseClass}__controls`,
           }}
           cmsURL={getClientSideURL()}
           collectionSlug={collection}
@@ -83,7 +75,7 @@ export const AdminBar: React.FC<{
             zIndex: 'unset',
           }}
         />
-      </div>
-    </div>
+      </Container>
+    </Box>
   )
 }

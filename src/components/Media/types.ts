@@ -1,15 +1,16 @@
+import type { HTMLChakraProps } from '@chakra-ui/react'
 import type { StaticImageData } from 'next/image'
-import type { ElementType, Ref } from 'react'
+import type { Ref } from 'react'
 
 import type { Media as MediaType } from '@/payload-types'
 
-export interface Props {
+export interface Props extends Omit<
+  HTMLChakraProps<'div'>,
+  'fill' | 'onLoad' | 'ref' | 'resource'
+> {
   alt?: string
-  className?: string
   fill?: boolean // for NextImage only
-  htmlElement?: ElementType | null
-  pictureClassName?: string
-  imgClassName?: string
+  imgProps?: HTMLChakraProps<'img'>
   onClick?: () => void
   onLoad?: () => void
   loading?: 'lazy' | 'eager' // for NextImage only
@@ -18,5 +19,5 @@ export interface Props {
   resource?: MediaType | string | number | null // for Payload media
   size?: string // for NextImage only
   src?: StaticImageData // for static media
-  videoClassName?: string
+  videoProps?: HTMLChakraProps<'video'>
 }

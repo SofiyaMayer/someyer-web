@@ -1,5 +1,6 @@
 import type { Post, ArchiveBlock as ArchiveBlockProps } from '@/payload-types'
 
+import { Box, Container } from '@chakra-ui/react'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import React from 'react'
@@ -53,13 +54,13 @@ export const ArchiveBlock: React.FC<
   }
 
   return (
-    <div className="my-16" id={`block-${id}`}>
+    <Box id={`block-${id}`} my="16">
       {introContent && (
-        <div className="container mb-16">
-          <RichText className="ms-0 max-w-[48rem]" data={introContent} enableGutter={false} />
-        </div>
+        <Container mb="16">
+          <RichText data={introContent} enableGutter={false} maxWidth="48rem" ms="0" />
+        </Container>
       )}
       <CollectionArchive posts={posts} />
-    </div>
+    </Box>
   )
 }

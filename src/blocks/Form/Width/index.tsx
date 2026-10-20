@@ -1,13 +1,15 @@
+import { Box, type BoxProps } from '@chakra-ui/react'
 import * as React from 'react'
 
-export const Width: React.FC<{
-  children: React.ReactNode
-  className?: string
-  width?: number | string
-}> = ({ children, className, width }) => {
+export const Width: React.FC<
+  {
+    children: React.ReactNode
+    width?: number | string
+  } & BoxProps
+> = ({ children, width, ...rest }) => {
   return (
-    <div className={className} style={{ maxWidth: width ? `${width}%` : undefined }}>
+    <Box maxWidth={width ? `${width}%` : undefined} {...rest}>
       {children}
-    </div>
+    </Box>
   )
 }

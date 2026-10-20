@@ -2,7 +2,7 @@
 
 import type { StaticImageData } from 'next/image'
 
-import { cn } from '@/utilities/ui'
+import { chakra, Image } from '@chakra-ui/react'
 import NextImage from 'next/image'
 import React from 'react'
 
@@ -49,8 +49,7 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
   const {
     alt: altFromProps,
     fill,
-    pictureClassName,
-    imgClassName,
+    imgProps,
     priority,
     resource,
     size: sizeFromProps,
@@ -85,21 +84,23 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
         .join(', ')
 
   return (
-    <picture className={cn(pictureClassName)}>
-      <NextImage
-        alt={alt || ''}
-        className={cn(imgClassName)}
-        fill={fill}
-        height={!fill ? height : undefined}
-        placeholder="blur"
-        blurDataURL={placeholderBlur}
-        priority={priority}
-        quality={100}
-        loading={loading}
-        sizes={sizes}
-        src={src}
-        width={!fill ? width : undefined}
-      />
-    </picture>
+    // next/image needs a positioned parent to fill; the picture spans the nearest positioned ancestor
+    <chakra.picture {...(fill ? { inset: '0', position: 'absolute' } : {})}>
+      <Image alt={alt || ''} asChild {...imgProps}>
+        <NextImage
+          alt={alt || ''}
+          fill={fill}
+          height={!fill ? height : undefined}
+          placeholder="blur"
+          blurDataURL={placeholderBlur}
+          priority={priority}
+          quality={100}
+          loading={loading}
+          sizes={sizes}
+          src={src}
+          width={!fill ? width : undefined}
+        />
+      </Image>
+    </chakra.picture>
   )
 }

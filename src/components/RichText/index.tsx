@@ -1,3 +1,4 @@
+import { Box, Container, type HTMLChakraProps } from '@chakra-ui/react'
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
 import {
   DefaultNodeTypes,
@@ -12,6 +13,7 @@ import {
 } from '@payloadcms/richtext-lexical/react'
 
 import { CodeBlock, CodeBlockProps } from '@/blocks/Code/Component'
+import { Prose } from '@/components/ui/prose'
 
 import type {
   BannerBlock as BannerBlockProps,
@@ -20,7 +22,6 @@ import type {
 } from '@/payload-types'
 import { BannerBlock } from '@/blocks/Banner/Component'
 import { CallToActionBlock } from '@/blocks/CallToAction/Component'
-import { cn } from '@/utilities/ui'
 
 type NodeTypes =
   | DefaultNodeTypes
@@ -39,18 +40,20 @@ const jsxConverters: JSXConvertersFunction<NodeTypes> = ({ defaultConverters }) 
   ...defaultConverters,
   ...LinkJSXConverter({ internalDocToHref }),
   blocks: {
-    banner: ({ node }) => <BannerBlock className="col-start-2 mb-4" {...node.fields} />,
+    banner: ({ node }) => (
+      <Box mb="4">
+        <BannerBlock {...node.fields} />
+      </Box>
+    ),
     mediaBlock: ({ node }) => (
       <MediaBlock
-        className="col-start-1 col-span-3"
-        imgClassName="m-0"
         {...node.fields}
-        captionClassName="mx-auto max-w-[48rem]"
+        captionProps={{ maxWidth: '48rem', mx: 'auto' }}
         enableGutter={false}
         disableInnerContainer={true}
       />
     ),
-    code: ({ node }) => <CodeBlock className="col-start-2" {...node.fields} />,
+    code: ({ node }) => <CodeBlock {...node.fields} />,
     cta: ({ node }) => <CallToActionBlock {...node.fields} />,
   },
 })
@@ -59,23 +62,35 @@ type Props = {
   data: DefaultTypedEditorState
   enableGutter?: boolean
   enableProse?: boolean
-} & React.HTMLAttributes<HTMLDivElement>
+} & HTMLChakraProps<'div'>
 
 export default function RichText(props: Props) {
-  const { className, enableProse = true, enableGutter = true, ...rest } = props
+  const { data, enableProse = true, enableGutter = true, ...rest } = props
+
+  const content = <ConvertRichText converters={jsxConverters} data={data} disableContainer />
+
+  if (!enableProse) {
+    const Wrapper = enableGutter ? Container : Box
+    return (
+      <Wrapper className="payload-richtext" {...rest}>
+        {content}
+      </Wrapper>
+    )
+  }
+
+  if (enableGutter) {
+    return (
+      <Container {...rest}>
+        <Prose className="payload-richtext" mx="auto" size="lg">
+          {content}
+        </Prose>
+      </Container>
+    )
+  }
+
   return (
-    <ConvertRichText
-      converters={jsxConverters}
-      className={cn(
-        'payload-richtext',
-        {
-          container: enableGutter,
-          'max-w-none': !enableGutter,
-          'mx-auto prose md:prose-md dark:prose-invert': enableProse,
-        },
-        className,
-      )}
-      {...rest}
-    />
+    <Prose className="payload-richtext" maxWidth="none" size="lg" {...rest}>
+      {content}
+    </Prose>
   )
 }

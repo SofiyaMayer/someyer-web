@@ -1,5 +1,6 @@
 import type { Metadata } from 'next/types'
 
+import { Box, Container, Heading } from '@chakra-ui/react'
 import { CollectionArchive } from '@/components/CollectionArchive'
 import { PageRange } from '@/components/PageRange'
 import { Pagination } from '@/components/Pagination'
@@ -28,31 +29,31 @@ export default async function Page() {
   })
 
   return (
-    <div className="pt-24 pb-24">
+    <Box pb="24" pt="24">
       <PageClient />
-      <div className="container mb-16">
-        <div className="prose dark:prose-invert max-w-none">
-          <h1>Posts</h1>
-        </div>
-      </div>
+      <Container mb="16">
+        <Heading as="h1" size={{ base: '4xl', md: '5xl' }}>
+          Posts
+        </Heading>
+      </Container>
 
-      <div className="container mb-8">
+      <Container mb="8">
         <PageRange
           collection="posts"
           currentPage={posts.page}
           limit={12}
           totalDocs={posts.totalDocs}
         />
-      </div>
+      </Container>
 
       <CollectionArchive posts={posts.docs} />
 
-      <div className="container">
+      <Container>
         {posts.totalPages > 1 && posts.page && (
           <Pagination page={posts.page} totalPages={posts.totalPages} />
         )}
-      </div>
-    </div>
+      </Container>
+    </Box>
   )
 }
 

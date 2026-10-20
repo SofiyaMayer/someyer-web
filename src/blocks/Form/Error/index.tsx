@@ -1,5 +1,6 @@
 'use client'
 
+import { Field } from '@chakra-ui/react'
 import * as React from 'react'
 import { useFormContext } from 'react-hook-form'
 
@@ -8,8 +9,8 @@ export const Error = ({ name }: { name: string }) => {
     formState: { errors },
   } = useFormContext()
   return (
-    <div className="mt-2 text-red-500 text-sm">
+    <Field.ErrorText>
       {(errors[name]?.message as string) || 'This field is required'}
-    </div>
+    </Field.ErrorText>
   )
 }

@@ -1,4 +1,5 @@
 'use client'
+import { Box, Container, Flex, HStack } from '@chakra-ui/react'
 import { useHeaderTheme } from '@/providers/HeaderTheme'
 import React, { useEffect } from 'react'
 
@@ -16,15 +17,27 @@ export const HighImpactHero: React.FC<Page['hero']> = ({ links, media, richText 
   })
 
   return (
-    <div
-      className="relative -mt-[10.4rem] flex items-center justify-center text-white"
+    <Flex
+      align="center"
+      className="chakra-theme"
+      color="fg"
       data-theme="dark"
+      justify="center"
+      mt="-10.4rem"
+      position="relative"
     >
-      <div className="container mb-8 z-10 relative flex items-center justify-center">
-        <div className="max-w-[36.5rem] md:text-center">
-          {richText && <RichText className="mb-6" data={richText} enableGutter={false} />}
+      <Container
+        alignItems="center"
+        display="flex"
+        justifyContent="center"
+        mb="8"
+        position="relative"
+        zIndex={10}
+      >
+        <Box maxWidth="36.5rem" textAlign={{ md: 'center' }}>
+          {richText && <RichText data={richText} enableGutter={false} mb="6" />}
           {Array.isArray(links) && links.length > 0 && (
-            <ul className="flex md:justify-center gap-4">
+            <HStack as="ul" gap="4" justify={{ md: 'center' }} listStyleType="none">
               {links.map(({ link }, i) => {
                 return (
                   <li key={i}>
@@ -32,15 +45,15 @@ export const HighImpactHero: React.FC<Page['hero']> = ({ links, media, richText 
                   </li>
                 )
               })}
-            </ul>
+            </HStack>
           )}
-        </div>
-      </div>
-      <div className="min-h-[80vh] select-none">
+        </Box>
+      </Container>
+      <Box minHeight="80vh" userSelect="none">
         {media && typeof media === 'object' && (
-          <Media fill imgClassName="-z-10 object-cover" priority resource={media} />
+          <Media fill imgProps={{ objectFit: 'cover', zIndex: -10 }} priority resource={media} />
         )}
-      </div>
-    </div>
+      </Box>
+    </Flex>
   )
 }

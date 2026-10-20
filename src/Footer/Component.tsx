@@ -1,8 +1,9 @@
+import { Box, Container, Flex } from '@chakra-ui/react'
 import { getCachedGlobal } from '@/utilities/getGlobals'
 import Link from 'next/link'
 import React from 'react'
 
-import { ThemeSelector } from '@/providers/Theme/ThemeSelector'
+import { ThemeSelector } from '@/components/ThemeSelector'
 import { CMSLink } from '@/components/Link'
 import { Logo } from '@/components/Logo/Logo'
 
@@ -12,21 +13,41 @@ export async function Footer() {
   const navItems = footerData?.navItems || []
 
   return (
-    <footer className="mt-auto border-t border-border bg-black dark:bg-card text-white">
-      <div className="container py-8 gap-8 flex flex-col md:flex-row md:justify-between">
-        <Link className="flex items-center" href="/">
-          <Logo />
-        </Link>
+    <Box
+      as="footer"
+      bg="bg.subtle"
+      borderTopWidth="1px"
+      className="chakra-theme"
+      data-theme="dark"
+      color="fg"
+      mt="auto"
+    >
+      <Container
+        display="flex"
+        flexDirection={{ base: 'column', md: 'row' }}
+        gap="8"
+        justifyContent={{ md: 'space-between' }}
+        py="8"
+      >
+        <Flex align="center" asChild>
+          <Link href="/">
+            <Logo />
+          </Link>
+        </Flex>
 
-        <div className="flex flex-col-reverse items-start md:flex-row gap-4 md:items-center">
+        <Flex
+          align={{ base: 'start', md: 'center' }}
+          direction={{ base: 'column-reverse', md: 'row' }}
+          gap="4"
+        >
           <ThemeSelector />
-          <nav className="flex flex-col md:flex-row gap-4">
+          <Flex as="nav" direction={{ base: 'column', md: 'row' }} gap="4">
             {navItems.map(({ link }, i) => {
-              return <CMSLink className="text-white" key={i} {...link} />
+              return <CMSLink key={i} {...link} />
             })}
-          </nav>
-        </div>
-      </div>
-    </footer>
+          </Flex>
+        </Flex>
+      </Container>
+    </Box>
   )
 }

@@ -1,8 +1,8 @@
 'use client'
 
-import type { Theme } from '@/providers/Theme/types'
-
 import React, { createContext, useCallback, use, useState } from 'react'
+
+export type Theme = 'dark' | 'light'
 
 export interface ContextType {
   headerTheme?: Theme | null

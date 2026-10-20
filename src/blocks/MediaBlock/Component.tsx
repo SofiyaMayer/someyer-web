@@ -1,6 +1,6 @@
 import type { StaticImageData } from 'next/image'
 
-import { cn } from '@/utilities/ui'
+import { Box, Container, type BoxProps } from '@chakra-ui/react'
 import React from 'react'
 import RichText from '@/components/RichText'
 
@@ -9,59 +9,37 @@ import type { MediaBlock as MediaBlockProps } from '@/payload-types'
 import { Media } from '../../components/Media'
 
 type Props = MediaBlockProps & {
-  breakout?: boolean
-  captionClassName?: string
-  className?: string
+  captionProps?: BoxProps
   enableGutter?: boolean
-  imgClassName?: string
   staticImage?: StaticImageData
   disableInnerContainer?: boolean
 }
 
 export const MediaBlock: React.FC<Props> = (props) => {
-  const {
-    captionClassName,
-    className,
-    enableGutter = true,
-    imgClassName,
-    media,
-    staticImage,
-    disableInnerContainer,
-  } = props
+  const { captionProps, enableGutter = true, media, staticImage, disableInnerContainer } = props
 
   let caption
   if (media && typeof media === 'object') caption = media.caption
 
+  const Wrapper = enableGutter ? Container : Box
+  const CaptionWrapper = disableInnerContainer ? Box : Container
+
   return (
-    <div
-      className={cn(
-        '',
-        {
-          container: enableGutter,
-        },
-        className,
-      )}
-    >
+    <Wrapper>
       {(media || staticImage) && (
         <Media
-          imgClassName={cn('border border-border rounded-[0.8rem]', imgClassName)}
+          // The block styles its own image; rich text prose would otherwise add margins to it
+          className="not-prose"
+          imgProps={{ borderRadius: '0.8rem', borderWidth: '1px' }}
           resource={media}
           src={staticImage}
         />
       )}
       {caption && (
-        <div
-          className={cn(
-            'mt-6',
-            {
-              container: !disableInnerContainer,
-            },
-            captionClassName,
-          )}
-        >
+        <CaptionWrapper mt="6" {...captionProps}>
           <RichText data={caption} enableGutter={false} />
-        </div>
+        </CaptionWrapper>
       )}
-    </div>
+    </Wrapper>
   )
 }

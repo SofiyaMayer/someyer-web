@@ -1,101 +1,79 @@
 'use client'
 import {
-  Pagination as PaginationComponent,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from '@/components/ui/pagination'
-import { cn } from '@/utilities/ui'
-import { useRouter } from 'next/navigation'
+  Box,
+  ButtonGroup,
+  IconButton,
+  Pagination as ChakraPagination,
+  type BoxProps,
+} from '@chakra-ui/react'
+import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
+import Link from 'next/link'
 import React from 'react'
 
-export const Pagination: React.FC<{
-  className?: string
-  page: number
-  totalPages: number
-}> = (props) => {
-  const router = useRouter()
+const pageHref = (page: number) => `/posts/page/${page}`
 
-  const { className, page, totalPages } = props
+export const Pagination: React.FC<
+  {
+    page: number
+    totalPages: number
+  } & BoxProps
+> = (props) => {
+  const { page, totalPages, ...rest } = props
   const hasNextPage = page < totalPages
   const hasPrevPage = page > 1
 
-  const hasExtraPrevPages = page - 1 > 1
-  const hasExtraNextPages = page + 1 < totalPages
-
   return (
-    <div className={cn('my-12', className)}>
-      <PaginationComponent>
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious
-              disabled={!hasPrevPage}
-              onClick={() => {
-                router.push(`/posts/page/${page - 1}`)
-              }}
-            />
-          </PaginationItem>
+    <Box my="12" {...rest}>
+      <ChakraPagination.Root count={totalPages} page={page} pageSize={1} siblingCount={1}>
+        <ButtonGroup size="sm" variant="ghost">
+          <IconButton aria-label="Go to previous page" asChild disabled={!hasPrevPage}>
+            {hasPrevPage ? (
+              <Link href={pageHref(page - 1)}>
+                <ChevronLeftIcon />
+              </Link>
+            ) : (
+              <span>
+                <ChevronLeftIcon />
+              </span>
+            )}
+          </IconButton>
 
-          {hasExtraPrevPages && (
-            <PaginationItem>
-              <PaginationEllipsis />
-            </PaginationItem>
-          )}
+          <ChakraPagination.Context>
+            {({ pages }) =>
+              pages.map((item, index) =>
+                item.type === 'page' ? (
+                  <IconButton
+                    asChild
+                    key={index}
+                    variant={item.value === page ? 'outline' : 'ghost'}
+                  >
+                    <Link
+                      aria-current={item.value === page ? 'page' : undefined}
+                      href={pageHref(item.value)}
+                    >
+                      {item.value}
+                    </Link>
+                  </IconButton>
+                ) : (
+                  <ChakraPagination.Ellipsis index={index} key={index} />
+                ),
+              )
+            }
+          </ChakraPagination.Context>
 
-          {hasPrevPage && (
-            <PaginationItem>
-              <PaginationLink
-                onClick={() => {
-                  router.push(`/posts/page/${page - 1}`)
-                }}
-              >
-                {page - 1}
-              </PaginationLink>
-            </PaginationItem>
-          )}
-
-          <PaginationItem>
-            <PaginationLink
-              isActive
-              onClick={() => {
-                router.push(`/posts/page/${page}`)
-              }}
-            >
-              {page}
-            </PaginationLink>
-          </PaginationItem>
-
-          {hasNextPage && (
-            <PaginationItem>
-              <PaginationLink
-                onClick={() => {
-                  router.push(`/posts/page/${page + 1}`)
-                }}
-              >
-                {page + 1}
-              </PaginationLink>
-            </PaginationItem>
-          )}
-
-          {hasExtraNextPages && (
-            <PaginationItem>
-              <PaginationEllipsis />
-            </PaginationItem>
-          )}
-
-          <PaginationItem>
-            <PaginationNext
-              disabled={!hasNextPage}
-              onClick={() => {
-                router.push(`/posts/page/${page + 1}`)
-              }}
-            />
-          </PaginationItem>
-        </PaginationContent>
-      </PaginationComponent>
-    </div>
+          <IconButton aria-label="Go to next page" asChild disabled={!hasNextPage}>
+            {hasNextPage ? (
+              <Link href={pageHref(page + 1)}>
+                <ChevronRightIcon />
+              </Link>
+            ) : (
+              <span>
+                <ChevronRightIcon />
+              </span>
+            )}
+          </IconButton>
+        </ButtonGroup>
+      </ChakraPagination.Root>
+    </Box>
   )
 }

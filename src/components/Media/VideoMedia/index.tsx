@@ -1,6 +1,6 @@
 'use client'
 
-import { cn } from '@/utilities/ui'
+import { chakra } from '@chakra-ui/react'
 import React, { useEffect, useRef } from 'react'
 
 import type { Props as MediaProps } from '../types'
@@ -8,7 +8,7 @@ import type { Props as MediaProps } from '../types'
 import { getMediaUrl } from '@/utilities/getMediaUrl'
 
 export const VideoMedia: React.FC<MediaProps> = (props) => {
-  const { onClick, resource, videoClassName } = props
+  const { onClick, resource, videoProps } = props
 
   const videoRef = useRef<HTMLVideoElement>(null)
   // const [showFallback] = useState<boolean>()
@@ -27,18 +27,18 @@ export const VideoMedia: React.FC<MediaProps> = (props) => {
     const { filename } = resource
 
     return (
-      <video
+      <chakra.video
         autoPlay
-        className={cn(videoClassName)}
         controls={false}
         loop
         muted
         onClick={onClick}
         playsInline
         ref={videoRef}
+        {...videoProps}
       >
         <source src={getMediaUrl(`/media/${filename}`)} />
-      </video>
+      </chakra.video>
     )
   }
 

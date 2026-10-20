@@ -1,63 +1,43 @@
 import type { SelectField } from '@payloadcms/plugin-form-builder/types'
-import type { Control, FieldErrorsImpl } from 'react-hook-form'
+import type { FieldErrorsImpl, FieldValues, UseFormRegister } from 'react-hook-form'
 
-import { Label } from '@/components/ui/label'
-import {
-  Select as SelectComponent,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+import { Field, NativeSelect } from '@chakra-ui/react'
 import React from 'react'
-import { Controller } from 'react-hook-form'
 
 import { Error } from '../Error'
 import { Width } from '../Width'
 
 export const Select: React.FC<
   SelectField & {
-    control: Control
     errors: Partial<FieldErrorsImpl>
+    register: UseFormRegister<FieldValues>
   }
-> = ({ name, control, errors, label, options, required, width, defaultValue }) => {
+> = ({ name, defaultValue, errors, label, options, register, required, width }) => {
   return (
     <Width width={width}>
-      <Label htmlFor={name}>
-        {label}
-        {required && (
-          <span className="required">
-            * <span className="sr-only">(required)</span>
-          </span>
-        )}
-      </Label>
-      <Controller
-        control={control}
-        defaultValue={defaultValue}
-        name={name}
-        render={({ field: { onChange, value } }) => {
-          const controlledValue = options.find((t) => t.value === value)
-
-          return (
-            <SelectComponent onValueChange={(val) => onChange(val)} value={controlledValue?.value}>
-              <SelectTrigger className="w-full" id={name}>
-                <SelectValue placeholder={label} />
-              </SelectTrigger>
-              <SelectContent>
-                {options.map(({ label, value }) => {
-                  return (
-                    <SelectItem key={value} value={value}>
-                      {label}
-                    </SelectItem>
-                  )
-                })}
-              </SelectContent>
-            </SelectComponent>
-          )
-        }}
-        rules={{ required }}
-      />
-      {errors[name] && <Error name={name} />}
+      <Field.Root invalid={Boolean(errors[name])} required={Boolean(required)}>
+        <Field.Label>
+          {label}
+          <Field.RequiredIndicator />
+        </Field.Label>
+        <NativeSelect.Root>
+          <NativeSelect.Field
+            defaultValue={defaultValue}
+            placeholder={label}
+            {...register(name, { required })}
+          >
+            {options.map(({ label, value }) => {
+              return (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              )
+            })}
+          </NativeSelect.Field>
+          <NativeSelect.Indicator />
+        </NativeSelect.Root>
+        <Error name={name} />
+      </Field.Root>
     </Width>
   )
 }

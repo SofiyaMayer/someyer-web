@@ -1,4 +1,5 @@
 'use client'
+import { Container, Flex } from '@chakra-ui/react'
 import { useHeaderTheme } from '@/providers/HeaderTheme'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -22,16 +23,19 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
   }, [pathname, setHeaderTheme])
 
   return (
-    <header
-      className="container relative z-20   "
-      {...(headerTheme ? { 'data-theme': headerTheme } : {})}
+    <Container
+      as="header"
+      {...(headerTheme === 'dark' ? { className: 'chakra-theme', 'data-theme': 'dark' } : {})}
+      color="fg"
+      position="relative"
+      zIndex={20}
     >
-      <div className="py-8 flex justify-between">
+      <Flex justify="space-between" py="8">
         <Link href="/">
-          <Logo loading="eager" priority="high" className="invert dark:invert-0" />
+          <Logo _dark={{ filter: 'none' }} filter="invert(1)" loading="eager" priority="high" />
         </Link>
         <HeaderNav data={data} />
-      </div>
-    </header>
+      </Flex>
+    </Container>
   )
 }

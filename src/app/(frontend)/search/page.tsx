@@ -1,5 +1,6 @@
 import type { Metadata } from 'next/types'
 
+import { Box, Container, Heading } from '@chakra-ui/react'
 import { CollectionArchive } from '@/components/CollectionArchive'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
@@ -60,24 +61,24 @@ export default async function Page({ searchParams: searchParamsPromise }: Args) 
   })
 
   return (
-    <div className="pt-24 pb-24">
+    <Box pb="24" pt="24">
       <PageClient />
-      <div className="container mb-16">
-        <div className="prose dark:prose-invert max-w-none text-center">
-          <h1 className="mb-8 lg:mb-16">Search</h1>
+      <Container mb="16" textAlign="center">
+        <Heading as="h1" mb={{ base: 8, lg: 16 }} size={{ base: '4xl', md: '5xl' }}>
+          Search
+        </Heading>
 
-          <div className="max-w-[50rem] mx-auto">
-            <Search />
-          </div>
-        </div>
-      </div>
+        <Box maxWidth="50rem" mx="auto">
+          <Search />
+        </Box>
+      </Container>
 
       {posts.totalDocs > 0 ? (
         <CollectionArchive posts={posts.docs as CardPostData[]} />
       ) : (
-        <div className="container">No results found.</div>
+        <Container>No results found.</Container>
       )}
-    </div>
+    </Box>
   )
 }
 
